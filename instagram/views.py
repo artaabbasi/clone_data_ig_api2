@@ -13,10 +13,15 @@ def clone_data(request):
     ig_user_id = config('IG_USER_ID')
     page = request.GET.get('page')
     duration = request.GET.get('duration', 30)
+    test = int(request.GET.get('test', 0))
 
-    # use_url = basic_url+ig_user_id+"?fields=business_discovery.username("+page+"){media{timestamp,comments_count,like_count,media_type}}&duration=&access_token="+access_token
-    # req = requests.get(use_url)
-    dict_content = json.loads(sample_data.sample_res)
+    if test:
+        dict_content = json.loads(sample_data.sample_res)
+    else:
+        use_url = basic_url+ig_user_id+"?fields=business_discovery.username("+page+"){media{timestamp,comments_count,like_count,media_type}}&duration=&access_token="+access_token
+        req = requests.get(use_url)
+        dict_content = json.loads(req.content)
+        
 
     page_obj, crt = models.Page.objects.get_or_create(username=page, ig_user_id=dict_content["business_discovery"]["ig_id"] )
     need_medias = []
