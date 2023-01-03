@@ -4,13 +4,18 @@ from . import models, sample_data, serializers
 import requests, json, datetime
 from decouple import config
 
+ACCESS_TOKEN = config('ACCESS_TOKEN')
+BASIC_URL = config('BASIC_URL')
+IG_USER_ID = config('IG_USER_ID')
 
 @decorators.api_view(['GET', ])
 @decorators.permission_classes([perms.AllowAny, ]) 
 def clone_data(request):
-    access_token = config('ACCESS_TOKEN')
-    basic_url = config('BASIC_URL')
-    ig_user_id = config('IG_USER_ID')
+    """
+    if you have access token in your .env file
+    dont send test param
+    else send ?test=1
+    """
     page = request.GET.get('page')
     duration = request.GET.get('duration', 30)
     test = int(request.GET.get('test', 0))
@@ -18,7 +23,7 @@ def clone_data(request):
     if test:
         dict_content = json.loads(sample_data.sample_res)
     else:
-        use_url = basic_url+ig_user_id+"?fields=business_discovery.username("+page+"){media{timestamp,comments_count,like_count,media_type}}&duration=&access_token="+access_token
+        use_url = BASIC_URL+IG_USER_ID+"?fields=business_discovery.username("+page+"){media{timestamp,comments_count,like_count,media_type}}&duration=&access_token="+ACCESS_TOKEN
         req = requests.get(use_url)
         dict_content = json.loads(req.content)
         
