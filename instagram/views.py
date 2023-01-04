@@ -28,7 +28,7 @@ def clone_data(request):
         dict_content = json.loads(req.content)
         
 
-    page_obj, crt = models.Page.objects.get_or_create(username=page, ig_user_id=dict_content["business_discovery"]["ig_id"] )
+    page_id = dict_content["business_discovery"]["ig_id"] 
     need_medias = []
     now = datetime.datetime.now()
     for media in dict_content["business_discovery"]["media"]["data"]:
@@ -36,7 +36,7 @@ def clone_data(request):
         timedelta =  now - post_timestamp
         if timedelta.days <= duration :
             values = {
-                "page_id":page_obj.id,
+                "page_id":page_id,
                 "media_id":media["id"],
                 "created_at": post_timestamp,
                 "like_count":media["like_count"],
